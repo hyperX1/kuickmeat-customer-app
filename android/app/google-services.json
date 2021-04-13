@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1081581157732",
+    "project_id": "kuick-meat-app",
+    "storage_bucket": "kuick-meat-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1081581157732:android:9ff7607b87b34198298e71",
+        "android_client_info": {
+          "package_name": "com.kuickmeat.kuickmeat_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1081581157732-emgrm96o0jfrvnoa0erh92d9oddiic1i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kuickmeat.kuickmeat_app",
+            "certificate_hash": "694fc7d18216703902a52c67bcdc18fce9e6caab"
+          }
+        },
+        {
+          "client_id": "1081581157732-143flpm88g928rg76p0g2kqgtkd1svvq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChbKBEisfxSQCWqFZtXA0cO27wOps4mfw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1081581157732-143flpm88g928rg76p0g2kqgtkd1svvq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
