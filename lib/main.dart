@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Colors.redAccent,
+        fontFamily: 'Lato',
       ),
       debugShowCheckedModeBanner: false,
       initialRoute: SplashScreen.id,

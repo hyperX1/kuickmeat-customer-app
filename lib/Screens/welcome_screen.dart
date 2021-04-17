@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kuickmeat_app/Screens/map_screen.dart';
 import 'package:kuickmeat_app/Screens/onboard_screen.dart';
@@ -100,7 +101,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                   String number =
                                       '+92${_phoneNumberController.text}';
                                   auth
-                                      .verifyPhone(context: context, number:number,latitude: null, longitude: null, address: null)
+                                      .verifyPhone(context: context, number:number)
                                       .then((value) {
                                     _phoneNumberController.clear();
 
@@ -126,7 +127,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             );
           },
         ),
-      );
+      ).whenComplete((){
+        setState(() {
+          auth.loading=false;
+          _phoneNumberController.clear();
+        });
+      });
     }
 
     final locationData = Provider.of<LocationProvider>(context);
@@ -143,7 +149,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 child: FlatButton(
                   child: Text(
                     'SKIP',
-                    style: TextStyle(color: Colors.redAccent),
+                    style: TextStyle(color: Theme.of(context).primaryColor),
                   ),
                   onPressed: () {},
                 ),
@@ -172,6 +178,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       setState(() {
                         locationData.loading=true;
                       });
+
                       await locationData.getCurrentPosition();
                       if(locationData.permissionAllowed==true){
                         Navigator.pushReplacementNamed(context, MapScreen.id);
@@ -202,6 +209,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       ),
                     ),
                     onPressed: () {
+                      setState(() {
+                        auth.screen='Login';
+                      });
                       showBottomSheet(context);
                     },
                   ),

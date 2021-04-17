@@ -154,15 +154,19 @@ class _MapScreenState extends State<MapScreen> {
                               absorbing: _locating ? true : false,
                               child: FlatButton(
                                 onPressed: () {
+                                  //save address in Shared Preferences
+                                  locationData.savePrefs();
                                   if(_loggedIn==false){
                                     Navigator.pushNamed(context, LoginScreen.id);
                                   }else{
+                                    setState(() {
+                                      _auth.latitude=locationData.latitude;
+                                      _auth.longitude=locationData.longitude;
+                                      _auth.address=locationData.selectedAddress.addressLine;
+                                    });
                                     _auth.updateUser(
                                       id: user.uid,
                                       number: user.phoneNumber,
-                                      latitude: locationData.latitude,
-                                      longitude: locationData.longitude,
-                                      address: locationData.selectedAddress.addressLine
                                     );
                                     Navigator.pushNamed(context, HomeScreen.id);
                                   }

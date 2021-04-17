@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kuickmeat_app/Screens/homeScreen.dart';
+import 'package:kuickmeat_app/Screens/map_screen.dart';
 import 'package:kuickmeat_app/providers/location_provider.dart';
 import 'package:kuickmeat_app/services/user_services.dart';
 
@@ -14,8 +15,13 @@ class AuthProvider with ChangeNotifier {
   UserServices _userServices = UserServices();
   bool loading = false;
   LocationProvider locationData = LocationProvider();
+  String screen;
+  double latitude;
+  double longitude;
+  String address;
 
-  Future<void> verifyPhone({BuildContext context, String number, double latitude, double longitude, String address}) async {
+
+  Future<void> verifyPhone({BuildContext context, String number}) async {
     this.loading=true;
     notifyListeners();
     final PhoneVerificationCompleted verificationCompleted =
@@ -38,7 +44,7 @@ class AuthProvider with ChangeNotifier {
 
       //open dialog to enter received OTP SMS
 
-      smsOtpDialog(context, number,latitude,longitude,address);
+      smsOtpDialog(context, number);
     };
     try {
       _auth.verifyPhoneNumber(
@@ -52,12 +58,13 @@ class AuthProvider with ChangeNotifier {
       );
     } catch (e) {
       this.error=e.toString();
+      this.loading=false;
       notifyListeners();
       print(e);
     }
   }
 
-  Future<bool> smsOtpDialog(BuildContext context, String number, double latitude, double longitude, String address) {
+  Future<bool> smsOtpDialog(BuildContext context, String number) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -94,24 +101,35 @@ class AuthProvider with ChangeNotifier {
 
                     final User user =
                     (await _auth.signInWithCredential(credential)).user;
-
-                    if(locationData.selectedAddress!=null){
-                      updateUser(id: user.uid, number: user.phoneNumber,latitude: locationData.latitude,longitude: locationData.longitude,address: locationData.selectedAddress.addressLine);
-                    }else{
-                      //create user data in fireStore after user successfully registered
-                      _createUser(id: user.uid, number: user.phoneNumber,latitude: latitude,longitude: longitude,address: address);
-                    }
-
-                    // navigate to Home page after login
-                    if (user != null) {
-                      Navigator.of(context).pop();
+                    if(user!=null){
                       this.loading=false;
+                      notifyListeners();
 
-                      //don't want to come back to welcome screen after logged in
-                      Navigator.pushReplacementNamed(context, HomeScreen.id);
-                    } else {
+                      _userServices.getUserById(user.uid).then((snapShot){
+                        if(snapShot.exists){
+                          //user data already exists
+                          if(this.screen=='Login'){
+                            //need to check user data already exists in db or not.
+                            //if its 'login'. No new data, so no need to update
+                            Navigator.pushReplacementNamed(context, HomeScreen.id);
+
+                          }else{
+                            //need to update new selected address
+                            updateUser(id: user.uid,number: user.phoneNumber);
+                            Navigator.pushReplacementNamed(context, HomeScreen.id);
+                          }
+                        }else{
+                          //user data doesn't exists
+                          // will create new data in db
+                          _createUser(id: user.uid,number: user.phoneNumber);
+                          Navigator.pushReplacementNamed(context, HomeScreen.id);
+                        }
+                      });
+
+                    }else{
                       print('Login Failed');
                     }
+
                   } catch (e) {
                     this.error = 'Invalid OTP';
                     notifyListeners();
@@ -126,29 +144,32 @@ class AuthProvider with ChangeNotifier {
               ),
             ],
           );
-        });
+        }).whenComplete(() {
+          this.loading=false;
+          notifyListeners();
+    });
   }
 
-  void _createUser({String id, String number,double latitude, double longitude, String address}) {
+  void _createUser({String id, String number}) {
     _userServices.createUserData({
       'id': id,
       'number': number,
-      'latitude' : latitude,
-      'longitude' : longitude,
-      'address' : address
+      'latitude' : this.latitude,
+      'longitude' : this.longitude,
+      'address' : this.address
     });
     this.loading=false;
     notifyListeners();
   }
-    void updateUser({String id, String number,double latitude, double longitude, String address}) {
-      _userServices.updateUserData({
-        'id': id,
-        'number': number,
-        'latitude' : latitude,
-        'longitude' : longitude,
-        'address' : address
-      });
-      this.loading=false;
-      notifyListeners();
+    void updateUser({String id, String number}) {
+  _userServices.updateUserData({
+    'id': id,
+    'number': number,
+    'latitude' : this.latitude,
+    'longitude' : this.longitude,
+    'address' : this.address
+  });
+  this.loading=false;
+  notifyListeners();
   }
 }
