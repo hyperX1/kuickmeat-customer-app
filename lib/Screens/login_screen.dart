@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kuickmeat_app/Screens/homeScreen.dart';
 import 'package:kuickmeat_app/providers/auth_provider.dart';
 import 'package:kuickmeat_app/providers/location_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login-screen';
@@ -11,6 +11,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String _location = '';
+  String _address = '';
+
+  @override
+  void initState() {
+    getPrefs();
+    super.initState();
+  }
+
+  getPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String location = prefs.getString('location');
+    String address = prefs.getString('address');
+    setState(() {
+      _location = location;
+      _address = address;
+    });
+  }
 
   bool _validPhoneNumber = false;
   var _phoneNumberController = TextEditingController();
@@ -45,8 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Text(
                   'LOGIN',
-                  style:
-                  TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Enter your phone number to proceed',
@@ -90,36 +107,40 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ? Theme.of(context).primaryColor
                                 : Colors.grey,
                             onPressed: () {
-                              setState((){
-                                auth.loading=true;
-                                auth.screen='MapScree';
-                                auth.latitude=locationData.latitude;
-                                auth.longitude=locationData.longitude;
-                                auth.address=locationData.selectedAddress.addressLine;
-
+                              setState(() {
+                                auth.loading = true;
+                                auth.screen = 'MapScree';
+                                auth.latitude = locationData.latitude;
+                                auth.longitude = locationData.longitude;
+                                auth.address =
+                                    locationData.selectedAddress.addressLine;
                               });
                               String number =
                                   '+92${_phoneNumberController.text}';
                               auth
                                   .verifyPhone(
-                                  context: context,
-                                  number: number,
-
-                              ).then((value) {
+                                context: context,
+                                number: number,
+                              )
+                                  .then((value) {
                                 _phoneNumberController.clear();
                                 setState(() {
-                                  auth.loading=false; // to disable circular indicator
+                                  auth.loading =
+                                      false; // to disable circular indicator
                                 });
                               });
                             },
-                            child: auth.loading ? CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ):Text(
-                              _validPhoneNumber
-                                  ? 'CONTINUE'
-                                  : 'ENTER PHONE NUMBER',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            child: auth.loading
+                                ? CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
+                                  )
+                                : Text(
+                                    _validPhoneNumber
+                                        ? 'CONTINUE'
+                                        : 'ENTER PHONE NUMBER',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                           ),
                         ),
                       ),

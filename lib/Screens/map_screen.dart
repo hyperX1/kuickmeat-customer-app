@@ -1,6 +1,3 @@
-
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,7 +15,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  LatLng currentLocation;
+  LatLng currentLocation = LatLng(24.8607, 67.0011);
   GoogleMapController _mapController;
   bool _locating = false;
   bool _loggedIn = false;
@@ -31,13 +28,13 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
   }
 
-  void getCurrentUser(){
-   setState(() {
-     user = FirebaseAuth.instance.currentUser;
-   });
-    if(user!=null){
+  void getCurrentUser() {
+    setState(() {
+      user = FirebaseAuth.instance.currentUser;
+    });
+    if (user != null) {
       setState(() {
-        _loggedIn=true;
+        _loggedIn = true;
       });
     }
   }
@@ -125,7 +122,10 @@ class _MapScreenState extends State<MapScreen> {
                             child: Text(
                               _locating
                                   ? 'Locating....'
-                                  : locationData.selectedAddress.featureName,
+                                  : locationData.selectedAddress == null
+                                      ? 'Locating...'
+                                      : locationData
+                                          .selectedAddress.featureName,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -139,7 +139,9 @@ class _MapScreenState extends State<MapScreen> {
                       child: Text(
                         _locating
                             ? ''
-                            : locationData.selectedAddress.addressLine,
+                            : locationData.selectedAddress == null
+                                ? ''
+                                : locationData.selectedAddress.addressLine,
                         style: TextStyle(color: Colors.black54),
                       ),
                     ),
@@ -156,13 +158,17 @@ class _MapScreenState extends State<MapScreen> {
                                 onPressed: () {
                                   //save address in Shared Preferences
                                   locationData.savePrefs();
-                                  if(_loggedIn==false){
-                                    Navigator.pushNamed(context, LoginScreen.id);
-                                  }else{
+                                  if (_loggedIn == false) {
+                                    Navigator.pushNamed(
+                                        context, LoginScreen.id);
+                                  } else {
                                     setState(() {
-                                      _auth.latitude=locationData.latitude;
-                                      _auth.longitude=locationData.longitude;
-                                      _auth.address=locationData.selectedAddress.addressLine;
+                                      _auth.latitude = locationData.latitude;
+                                      _auth.longitude = locationData.longitude;
+                                      _auth.address = locationData
+                                          .selectedAddress.addressLine;
+                                      _auth.location = locationData
+                                          .selectedAddress.featureName;
                                     });
                                     _auth.updateUser(
                                       id: user.uid,
@@ -175,7 +181,9 @@ class _MapScreenState extends State<MapScreen> {
                                   'CONFIRM LOCATION',
                                   style: TextStyle(color: Colors.white),
                                 ),
-                                color:_locating ? Colors.grey : Theme.of(context).primaryColor,
+                                color: _locating
+                                    ? Colors.grey
+                                    : Theme.of(context).primaryColor,
                               ))),
                     ),
                   ],

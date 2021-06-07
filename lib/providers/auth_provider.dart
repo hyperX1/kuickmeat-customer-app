@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kuickmeat_app/Screens/homeScreen.dart';
-import 'package:kuickmeat_app/Screens/map_screen.dart';
+import 'package:kuickmeat_app/Screens/landing_screen.dart';
 import 'package:kuickmeat_app/providers/location_provider.dart';
 import 'package:kuickmeat_app/services/user_services.dart';
 
@@ -19,23 +18,24 @@ class AuthProvider with ChangeNotifier {
   double latitude;
   double longitude;
   String address;
-
+  String location;
 
   Future<void> verifyPhone({BuildContext context, String number}) async {
-    this.loading=true;
+    this.loading = true;
     notifyListeners();
+
     final PhoneVerificationCompleted verificationCompleted =
         (PhoneAuthCredential credential) async {
-      this.loading=false;
+      this.loading = false;
       notifyListeners();
       await _auth.signInWithCredential(credential);
     };
 
     final PhoneVerificationFailed verificationFailed =
         (FirebaseAuthException e) {
-      this.loading=false;
+      this.loading = false;
       print(e.code);
-      this.error=e.toString();
+      this.error = e.toString();
       notifyListeners();
     };
 
@@ -57,8 +57,8 @@ class AuthProvider with ChangeNotifier {
         },
       );
     } catch (e) {
-      this.error=e.toString();
-      this.loading=false;
+      this.error = e.toString();
+      this.loading = false;
       notifyListeners();
       print(e);
     }
@@ -100,36 +100,40 @@ class AuthProvider with ChangeNotifier {
                         verificationId: verificationId, smsCode: smsOtp);
 
                     final User user =
-                    (await _auth.signInWithCredential(credential)).user;
-                    if(user!=null){
-                      this.loading=false;
+                        (await _auth.signInWithCredential(credential)).user;
+                    if (user != null) {
+                      this.loading = false;
                       notifyListeners();
 
-                      _userServices.getUserById(user.uid).then((snapShot){
-                        if(snapShot.exists){
+                      _userServices.getUserById(user.uid).then((snapShot) {
+                        if (snapShot.exists) {
                           //user data already exists
-                          if(this.screen=='Login'){
+                          if (this.screen == 'Login') {
                             //need to check user data already exists in db or not.
                             //if its 'login'. No new data, so no need to update
-                            Navigator.pushReplacementNamed(context, HomeScreen.id);
-
-                          }else{
+                            if (snapShot.data()['address'] != null) {
+                              Navigator.pushReplacementNamed(
+                                  context, HomeScreen.id);
+                            }
+                            Navigator.pushReplacementNamed(
+                                context, LandingScreen.id);
+                          } else {
                             //need to update new selected address
-                            updateUser(id: user.uid,number: user.phoneNumber);
-                            Navigator.pushReplacementNamed(context, HomeScreen.id);
+                            updateUser(id: user.uid, number: user.phoneNumber);
+                            Navigator.pushReplacementNamed(
+                                context, HomeScreen.id);
                           }
-                        }else{
+                        } else {
                           //user data doesn't exists
                           // will create new data in db
-                          _createUser(id: user.uid,number: user.phoneNumber);
-                          Navigator.pushReplacementNamed(context, HomeScreen.id);
+                          _createUser(id: user.uid, number: user.phoneNumber);
+                          Navigator.pushReplacementNamed(
+                              context, LandingScreen.id);
                         }
                       });
-
-                    }else{
+                    } else {
                       print('Login Failed');
                     }
-
                   } catch (e) {
                     this.error = 'Invalid OTP';
                     notifyListeners();
@@ -145,8 +149,8 @@ class AuthProvider with ChangeNotifier {
             ],
           );
         }).whenComplete(() {
-          this.loading=false;
-          notifyListeners();
+      this.loading = false;
+      notifyListeners();
     });
   }
 
@@ -154,22 +158,25 @@ class AuthProvider with ChangeNotifier {
     _userServices.createUserData({
       'id': id,
       'number': number,
-      'latitude' : this.latitude,
-      'longitude' : this.longitude,
-      'address' : this.address
+      'latitude': this.latitude,
+      'longitude': this.longitude,
+      'address': this.address,
+      'location': this.location,
     });
-    this.loading=false;
+    this.loading = false;
     notifyListeners();
   }
-    void updateUser({String id, String number}) {
-  _userServices.updateUserData({
-    'id': id,
-    'number': number,
-    'latitude' : this.latitude,
-    'longitude' : this.longitude,
-    'address' : this.address
-  });
-  this.loading=false;
-  notifyListeners();
+
+  void updateUser({String id, String number}) {
+    _userServices.updateUserData({
+      'id': id,
+      'number': number,
+      'latitude': this.latitude,
+      'longitude': this.longitude,
+      'address': this.address,
+      'location': this.location,
+    });
+    this.loading = false;
+    notifyListeners();
   }
 }

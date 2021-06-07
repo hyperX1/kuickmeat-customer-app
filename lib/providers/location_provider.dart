@@ -6,8 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocationProvider with ChangeNotifier {
-  double latitude;
-  double longitude;
+  double latitude= 24.8607;
+  double longitude =67.0011;
   bool permissionAllowed = false;
   var selectedAddress;
   bool loading =false;

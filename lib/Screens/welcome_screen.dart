@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:kuickmeat_app/Screens/map_screen.dart';
 import 'package:kuickmeat_app/Screens/onboard_screen.dart';

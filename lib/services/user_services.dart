@@ -1,7 +1,6 @@
 // for all firebase related services for user
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kuickmeat_app/models/user_model.dart';
 
 class UserServices {
   String collection = 'users';
@@ -25,7 +24,6 @@ class UserServices {
 
   Future<DocumentSnapshot> getUserById(String id) async {
     var result = await _firestore.collection(collection).doc(id).get();
-
       return result;
 
   }

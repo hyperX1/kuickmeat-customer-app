@@ -80,7 +80,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
           ),
         ),
         SizedBox(
-          height: 20,
+          height: 10,
         ),
         DotsIndicator(
           dotsCount: _pages.length,

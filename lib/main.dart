@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kuickmeat_app/Screens/landing_screen.dart';
 import 'package:kuickmeat_app/Screens/login_screen.dart';
+import 'package:kuickmeat_app/providers/store_provider.dart';
 import 'Screens/map_screen.dart';
 import 'package:kuickmeat_app/providers/location_provider.dart';
 import 'Screens/homeScreen.dart';
@@ -22,6 +24,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => LocationProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => StoreProvider(),
         ),
       ],
       child: MyApp(),
@@ -45,6 +50,7 @@ class MyApp extends StatelessWidget {
         WelcomeScreen.id: (context) => WelcomeScreen(),
         MapScreen.id:(context)=>MapScreen(),
         LoginScreen.id:(context)=>LoginScreen(),
+        LandingScreen.id:(context)=>LandingScreen(),
       },
     );
   }
