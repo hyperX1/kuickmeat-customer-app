@@ -9,36 +9,56 @@ import 'package:paginate_firestore/bloc/pagination_listeners.dart';
 import 'package:paginate_firestore/paginate_firestore.dart';
 import 'package:provider/provider.dart';
 
-class NearByStores extends StatelessWidget {
+class NearByStores extends StatefulWidget {
+  @override
+  _NearByStoresState createState() => _NearByStoresState();
+}
 
+class _NearByStoresState extends State<NearByStores> {
+  double latitude = 0.0;
+  double longitude = 0.0;
+
+  void didChangeDependencies() {
+    final _storeData = Provider.of<StoreProvider>(context);
+    _storeData.determinePosition().then((position) {
+      setState(() {
+        latitude = position.latitude;
+        longitude = position.longitude;
+      });
+    });
+    super.didChangeDependencies();
+  }
+
+  String getDistance(location) {
+    var distance = Geolocator.distanceBetween(
+        latitude, longitude, location.latitude, location.longitude);
+    var distanceInKm = distance / 1000; //this will show in kilometer
+    return distanceInKm.toStringAsFixed(2);
+  }
+
+  StoreServices _storeServices = StoreServices();
+  PaginateRefreshedChangeListener refreshedChangeListener =
+      PaginateRefreshedChangeListener();
 
   @override
   Widget build(BuildContext context) {
-    StoreServices _storeServices = StoreServices();
-    PaginateRefreshedChangeListener refreshedChangeListener =
-    PaginateRefreshedChangeListener();
-
     final _storeData = Provider.of<StoreProvider>(context);
-    _storeData.getUserLocationData(context);
-
-    String getDistance(location) {
-      var distance = Geolocator.distanceBetween(_storeData.userLatitude,
-          _storeData.userLongitude, location.latitude, location.longitude);
-      var distanceInKm = distance / 1000; //this will show in kilometer
-      return distanceInKm.toStringAsFixed(2);
-    }
+    //_storeData.getUserLocationData(context);
 
     return Container(
       color: Colors.white,
       child: StreamBuilder<QuerySnapshot>(
         stream: _storeServices.getNearByStore(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapShot) {
-          if (!snapShot.hasData) return CircularProgressIndicator();
+          if (!snapShot.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
           List shopDistance = [];
-          for (int i = 0; i <= snapShot.data.docs.length-1; i++) {
+          for (int i = 0; i <= snapShot.data.docs.length - 1; i++) {
             var distance = Geolocator.distanceBetween(
-                _storeData.userLatitude,
-                _storeData.userLongitude,
+                latitude,
+                longitude,
                 snapShot.data.docs[i]['location'].latitude,
                 snapShot.data.docs[i]['location'].longitude);
             var distanceInKm = distance / 1000;
@@ -49,17 +69,22 @@ class NearByStores extends StatelessWidget {
             return Container(
               child: Stack(
                 children: [
-              Padding(
-              padding: const EdgeInsets.only(bottom:30,top: 30, left: 20,right: 20),
-              child: Container(
-                child: Center(
-                  child: Text(
-                    'Currently we\'re not servicing in your area, Please try again later or try another location',textAlign: TextAlign.left, style: TextStyle(color: Colors.black54, fontSize: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: 30, top: 30, left: 20, right: 20),
+                    child: Container(
+                      child: Center(
+                        child: Text(
+                          'Currently we\'re not servicing in your area, Please try again later or try another location',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(color: Colors.black54, fontSize: 20),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-                  SizedBox(height: 40,),
+                  SizedBox(
+                    height: 40,
+                  ),
                   Image.asset(
                     'images/city.png',
                     color: Colors.black12,
@@ -120,8 +145,8 @@ class NearByStores extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.only(left: 8, right: 8,bottom: 10),
+                          padding: const EdgeInsets.only(
+                              left: 8, right: 8, bottom: 10),
                           child: Text(
                             'Find out Quality meat shops near you',
                             style: TextStyle(color: Colors.grey, fontSize: 12),
@@ -132,96 +157,96 @@ class NearByStores extends StatelessWidget {
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilderType: PaginateBuilderType.listView,
-                    itemBuilder: (index, context, document) =>Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 100,
-                                height: 110,
-                                child: Card(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(4),
-                                    child: Image.network(
-                                      document['imageUrl'],
-                                      fit: BoxFit.cover,
-                                    ),
+                    itemBuilder: (index, context, document) => Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              height: 110,
+                              child: Card(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: Image.network(
+                                    document['imageUrl'],
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    child: Text(
-                                      document.data()['shopName'],
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  child: Text(
+                                    document.data()['shopName'],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
                                     ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  SizedBox(
-                                    height: 3,
-                                  ),
-                                  Text(
-                                    document.data()['dialog'],
-                                    style: kStoreCardStyle,
-                                  ),
-                                  SizedBox(
-                                    height: 3,
-                                  ),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width - 250,
-                                    child: Text(
-                                      document.data()['address'],
-                                      overflow: TextOverflow.ellipsis,
-                                      style: kStoreCardStyle,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 3,
-                                  ),
-                                  Text(
-                                    '${getDistance(document['location'])}Km',
+                                ),
+                                SizedBox(
+                                  height: 3,
+                                ),
+                                Text(
+                                  document.data()['dialog'],
+                                  style: kStoreCardStyle,
+                                ),
+                                SizedBox(
+                                  height: 3,
+                                ),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width - 250,
+                                  child: Text(
+                                    document.data()['address'],
                                     overflow: TextOverflow.ellipsis,
                                     style: kStoreCardStyle,
                                   ),
-                                  SizedBox(
-                                    height: 3,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.star,
-                                        size: 12,
-                                        color: Colors.grey,
-                                      ),
-                                      SizedBox(
-                                        width: 4,
-                                      ),
-                                      Text(
-                                        '3.2',
-                                        style: kStoreCardStyle,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                                SizedBox(
+                                  height: 3,
+                                ),
+                                Text(
+                                  '${getDistance(document['location'])}Km',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: kStoreCardStyle,
+                                ),
+                                SizedBox(
+                                  height: 3,
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      size: 12,
+                                      color: Colors.grey,
+                                    ),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text(
+                                      '3.2',
+                                      style: kStoreCardStyle,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
+                    ),
                     query: _storeServices.getNearByStorePagination(),
                     listeners: [
                       refreshedChangeListener,
@@ -270,8 +295,8 @@ class NearByStores extends StatelessWidget {
                       ),
                     ),
                   ),
-                  onRefresh: ()async{
-                    refreshedChangeListener.refreshed=true;
+                  onRefresh: () async {
+                    refreshedChangeListener.refreshed = true;
                   },
                 ),
               ],

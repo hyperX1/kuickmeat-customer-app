@@ -46,10 +46,8 @@ class _LandingScreenState extends State<LandingScreen> {
                   color: Colors.black12,
                 ),
               ),
-              _loading ? CircularProgressIndicator() : TextButton(
-                style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor),
-                ),
+              _loading ? CircularProgressIndicator() : FlatButton(
+                color: Theme.of(context).primaryColor,
                 onPressed: () async {
                   setState(() {
                     _loading = true;

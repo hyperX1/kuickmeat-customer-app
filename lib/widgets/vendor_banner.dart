@@ -25,7 +25,7 @@ class _VendorBannerState extends State<VendorBanner> {
     var _fireStore = FirebaseFirestore.instance;
     QuerySnapshot snapshot = await _fireStore
         .collection('vendorbanner')
-        .where('sellerUid', isEqualTo: storeProvider.selectedStoreId)
+        .where('sellerUid', isEqualTo: storeProvider.storedetails['uid'])
         .get();
     if (mounted) {
       setState(() {

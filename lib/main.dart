@@ -49,11 +49,11 @@ class MyApp extends StatelessWidget {
         SplashScreen.id: (context) => SplashScreen(),
         HomeScreen.id: (context) => HomeScreen(),
         WelcomeScreen.id: (context) => WelcomeScreen(),
-        MapScreen.id:(context)=>MapScreen(),
-        LoginScreen.id:(context)=>LoginScreen(),
-        LandingScreen.id:(context)=>LandingScreen(),
-        MainScreen.id:(context)=>MainScreen(),
-        VendorHomeScreen.id:(context)=>VendorHomeScreen(),
+        MapScreen.id: (context) => MapScreen(),
+        LoginScreen.id: (context) => LoginScreen(),
+        LandingScreen.id: (context) => LandingScreen(),
+        MainScreen.id: (context) => MainScreen(),
+        VendorHomeScreen.id: (context) => VendorHomeScreen(),
       },
     );
   }

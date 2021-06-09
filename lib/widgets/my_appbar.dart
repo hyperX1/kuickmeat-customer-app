@@ -1,7 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kuickmeat_app/Screens/map_screen.dart';
-import 'package:kuickmeat_app/Screens/welcome_screen.dart';
 import 'package:kuickmeat_app/providers/location_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +35,8 @@ class _MyAppBarState extends State<MyAppBar> {
     return SliverAppBar(
       automaticallyImplyLeading: false,
       elevation: 0.0,
+      floating: true,
+      snap: true,
       title: FlatButton(
         onPressed: () {
           locationData.getCurrentPosition();
@@ -55,7 +55,8 @@ class _MyAppBarState extends State<MyAppBar> {
                 Flexible(
                   child: Text(
                     _location == null ? 'Address not set' : _location,
-                    style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -67,13 +68,13 @@ class _MyAppBarState extends State<MyAppBar> {
               ],
             ),
             Flexible(
-                child: Text(
-              _address==null?'Press here to set Delivery Location' : _address,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Colors.white,fontSize: 12
+              child: Text(
+                _address == null
+                    ? 'Press here to set Delivery Location'
+                    : _address,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.white, fontSize: 12),
               ),
-            ),
             ),
           ],
         ),
