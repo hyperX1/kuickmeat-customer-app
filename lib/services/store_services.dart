@@ -3,6 +3,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class StoreServices{
+
+
+  CollectionReference vendorbanner = FirebaseFirestore.instance.collection('vendorbanner');
+
   getTopPickedStore(){
     return FirebaseFirestore.instance.collection('vendors').where(
         'accVerified', isEqualTo: true).where('isTopPicked',isEqualTo: true).where('shopOpen',isEqualTo: true).orderBy('shopName').snapshots();

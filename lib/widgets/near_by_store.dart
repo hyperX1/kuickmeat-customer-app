@@ -9,23 +9,21 @@ import 'package:paginate_firestore/bloc/pagination_listeners.dart';
 import 'package:paginate_firestore/paginate_firestore.dart';
 import 'package:provider/provider.dart';
 
-class NearByStores extends StatefulWidget {
-  @override
-  _NearByStoresState createState() => _NearByStoresState();
-}
+class NearByStores extends StatelessWidget {
 
-class _NearByStoresState extends State<NearByStores> {
-  StoreServices _storeServices = StoreServices();
-  PaginateRefreshedChangeListener refreshedChangeListener =
-      PaginateRefreshedChangeListener();
+
   @override
   Widget build(BuildContext context) {
+    StoreServices _storeServices = StoreServices();
+    PaginateRefreshedChangeListener refreshedChangeListener =
+    PaginateRefreshedChangeListener();
+
     final _storeData = Provider.of<StoreProvider>(context);
     _storeData.getUserLocationData(context);
 
     String getDistance(location) {
       var distance = Geolocator.distanceBetween(_storeData.userLatitude,
-          _storeData.userLongitude, location.latitude, location.Longitude);
+          _storeData.userLongitude, location.latitude, location.longitude);
       var distanceInKm = distance / 1000; //this will show in kilometer
       return distanceInKm.toStringAsFixed(2);
     }
@@ -235,7 +233,7 @@ class _NearByStoresState extends State<NearByStores> {
                           children: [
                             Center(
                               child: Text(
-                                '**That\s all folls**',
+                                '**That\s all folks**',
                                 style: TextStyle(color: Colors.grey),
                               ),
                             ),

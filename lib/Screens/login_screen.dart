@@ -103,6 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: AbsorbPointer(
                           absorbing: _validPhoneNumber ? false : true,
                           child: FlatButton(
+                            height: 40,
                             color: _validPhoneNumber
                                 ? Theme.of(context).primaryColor
                                 : Colors.grey,
@@ -131,10 +132,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             },
                             child: auth.loading
-                                ? CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white),
-                                  )
+                                ? SizedBox(
+                              height: 5,
+                                  width: 5,
+                                  child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    ),
+                                )
                                 : Text(
                                     _validPhoneNumber
                                         ? 'CONTINUE'

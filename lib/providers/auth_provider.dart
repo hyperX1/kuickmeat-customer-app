@@ -93,7 +93,7 @@ class AuthProvider with ChangeNotifier {
               ),
             ),
             actions: [
-              FlatButton(
+              TextButton(
                 onPressed: () async {
                   try {
                     AuthCredential credential = PhoneAuthProvider.credential(
@@ -111,7 +111,7 @@ class AuthProvider with ChangeNotifier {
                           if (this.screen == 'Login') {
                             //need to check user data already exists in db or not.
                             //if its 'login'. No new data, so no need to update
-                            if (snapShot.data()['address'] != null) {
+                            if (snapShot['address'] != null) {
                               Navigator.pushReplacementNamed(
                                   context, HomeScreen.id);
                             }

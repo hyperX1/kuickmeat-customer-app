@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kuickmeat_app/Screens/landing_screen.dart';
+import 'package:kuickmeat_app/Screens/main_screen.dart';
 import 'package:kuickmeat_app/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'homeScreen.dart';
 import 'welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -59,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
     prefs.setString('address', result['address']);
     prefs.setString('location', result['location']);
     //after update prefs, Navigate to Home Screen
-    Navigator.pushReplacementNamed(context, HomeScreen.id);
+    Navigator.pushReplacementNamed(context, MainScreen.id);
   }
 
   Widget build(BuildContext context) {

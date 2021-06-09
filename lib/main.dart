@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kuickmeat_app/Screens/landing_screen.dart';
 import 'package:kuickmeat_app/Screens/login_screen.dart';
+import 'package:kuickmeat_app/Screens/main_screen.dart';
+import 'package:kuickmeat_app/Screens/vendor_home_screen.dart';
 import 'package:kuickmeat_app/providers/store_provider.dart';
 import 'Screens/map_screen.dart';
 import 'package:kuickmeat_app/providers/location_provider.dart';
@@ -10,7 +12,6 @@ import 'package:kuickmeat_app/Screens/welcome_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:kuickmeat_app/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
-
 import 'Screens/splash_screen.dart';
 
 void main() async {
@@ -51,6 +52,8 @@ class MyApp extends StatelessWidget {
         MapScreen.id:(context)=>MapScreen(),
         LoginScreen.id:(context)=>LoginScreen(),
         LandingScreen.id:(context)=>LandingScreen(),
+        MainScreen.id:(context)=>MainScreen(),
+        VendorHomeScreen.id:(context)=>VendorHomeScreen(),
       },
     );
   }
