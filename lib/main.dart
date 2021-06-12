@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kuickmeat_app/Screens/landing_screen.dart';
 import 'package:kuickmeat_app/Screens/login_screen.dart';
 import 'package:kuickmeat_app/Screens/main_screen.dart';
+import 'package:kuickmeat_app/Screens/product_list_screen.dart';
 import 'package:kuickmeat_app/Screens/vendor_home_screen.dart';
 import 'package:kuickmeat_app/providers/store_provider.dart';
 import 'Screens/map_screen.dart';
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
         LandingScreen.id: (context) => LandingScreen(),
         MainScreen.id: (context) => MainScreen(),
         VendorHomeScreen.id: (context) => VendorHomeScreen(),
+        ProductListScreen.id: (context) => ProductListScreen(),
       },
     );
   }

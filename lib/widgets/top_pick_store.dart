@@ -14,33 +14,22 @@ class TopPickStore extends StatefulWidget {
 }
 
 class _TopPickStoreState extends State<TopPickStore> {
-  double latitude = 0.0;
-  double longitude = 0.0;
 
-  @override
-  void didChangeDependencies() {
-    final _storeData = Provider.of<StoreProvider>(context);
-    _storeData.determinePosition().then((position) {
-      setState(() {
-        latitude = position.latitude;
-        longitude = position.longitude;
-      });
-    });
-    super.didChangeDependencies();
-  }
 
-  String getDistance(location) {
-    var distance = Geolocator.distanceBetween(
-        latitude, longitude, location.latitude, location.longitude);
-    var distanceInKm = distance / 1000; //this will show in kilometer
-    return distanceInKm.toStringAsFixed(2);
-  }
 
   @override
   Widget build(BuildContext context) {
     StoreServices _storeServices = StoreServices();
     final _storeData = Provider.of<StoreProvider>(context);
-    //_storeData.getUserLocationData(context);
+    _storeData.getUserLocationData(context);
+
+    String getDistance(location) {
+      var distance = Geolocator.distanceBetween(
+          _storeData.userLatitude,
+          _storeData.userLongitude, location.latitude, location.longitude);
+      var distanceInKm = distance / 1000; //this will show in kilometer
+      return distanceInKm.toStringAsFixed(2);
+    }
 
     return Container(
       child: StreamBuilder<QuerySnapshot>(
@@ -53,8 +42,8 @@ class _TopPickStoreState extends State<TopPickStore> {
           List shopDistance = [];
           for (int i = 0; i <= snapShot.data.docs.length - 1; i++) {
             var distance = Geolocator.distanceBetween(
-              latitude,
-              longitude,
+              _storeData.userLatitude,
+              _storeData.userLongitude,
               snapShot.data.docs[i]['location'].latitude,
               snapShot.data.docs[i]['location'].longitude,
             );
