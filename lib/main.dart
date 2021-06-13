@@ -1,19 +1,22 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:kuickmeat_app/Screens/cart_screen.dart';
+import 'package:kuickmeat_app/Screens/homeScreen.dart';
 import 'package:kuickmeat_app/Screens/landing_screen.dart';
 import 'package:kuickmeat_app/Screens/login_screen.dart';
 import 'package:kuickmeat_app/Screens/main_screen.dart';
+import 'package:kuickmeat_app/Screens/map_screen.dart';
+import 'package:kuickmeat_app/Screens/product_details_screen.dart';
 import 'package:kuickmeat_app/Screens/product_list_screen.dart';
+import 'package:kuickmeat_app/Screens/splash_screen.dart';
 import 'package:kuickmeat_app/Screens/vendor_home_screen.dart';
+import 'package:kuickmeat_app/providers/cart_provider.dart';
 import 'package:kuickmeat_app/providers/store_provider.dart';
-import 'Screens/map_screen.dart';
 import 'package:kuickmeat_app/providers/location_provider.dart';
-import 'Screens/homeScreen.dart';
 import 'package:kuickmeat_app/Screens/welcome_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:kuickmeat_app/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
-import 'Screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +32,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => StoreProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CartProvider(),
         ),
       ],
       child: MyApp(),
@@ -56,7 +62,10 @@ class MyApp extends StatelessWidget {
         MainScreen.id: (context) => MainScreen(),
         VendorHomeScreen.id: (context) => VendorHomeScreen(),
         ProductListScreen.id: (context) => ProductListScreen(),
+        ProductDetailsScreen.id: (context) => ProductDetailsScreen(),
+        CartScreen.id: (context) => CartScreen(),
       },
+      builder: EasyLoading.init(),
     );
   }
 }

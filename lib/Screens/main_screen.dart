@@ -4,6 +4,7 @@ import 'package:kuickmeat_app/Screens/favourite_screen.dart';
 import 'package:kuickmeat_app/Screens/homeScreen.dart';
 import 'package:kuickmeat_app/Screens/my_orders_screen.dart';
 import 'package:kuickmeat_app/Screens/profile_screen.dart';
+import 'package:kuickmeat_app/widgets/cart/cart_notification.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class MainScreen extends StatelessWidget {
@@ -56,6 +57,11 @@ class MainScreen extends StatelessWidget {
     }
 
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 56),
+        child: CartNotification(),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: PersistentTabView(
         context,
         navBarHeight: 56,
