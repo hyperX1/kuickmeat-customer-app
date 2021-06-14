@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:kuickmeat_app/constants.dart';
+import 'package:kuickmeat_app/providers/cart_provider.dart';
 import 'package:kuickmeat_app/providers/store_provider.dart';
 import 'package:kuickmeat_app/services/store_services.dart';
 import 'package:paginate_firestore/bloc/pagination_listeners.dart';
@@ -27,6 +29,7 @@ class _NearByStoresState extends State<NearByStores> {
   Widget build(BuildContext context) {
 
     final _storeData = Provider.of<StoreProvider>(context);
+    final _cart = Provider.of<CartProvider>(context);
     _storeData.getUserLocationData(context);
 
     String getDistance(location) {
@@ -54,7 +57,11 @@ class _NearByStoresState extends State<NearByStores> {
             var distanceInKm = distance / 1000;
             shopDistance.add(distanceInKm);
           }
-          shopDistance.sort();
+          shopDistance.sort(); //this will sort with nearest distance. If nearest distance is more than 10, that means no shop near by
+          SchedulerBinding.instance
+          .addPostFrameCallback((_) => setState((){
+            _cart.getDistance(shopDistance[0]);
+          }));
           if (shopDistance[0] > 10) {
             return Container(
               child: Stack(

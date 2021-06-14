@@ -12,7 +12,7 @@ class LocationProvider with ChangeNotifier {
   var selectedAddress;
   bool loading =false;
 
-  Future<void> getCurrentPosition() async {
+  Future<Position> getCurrentPosition() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     if (position != null) {
@@ -28,6 +28,7 @@ class LocationProvider with ChangeNotifier {
     } else {
       print('Permission not allowed');
     }
+    return position;
   }
 
   void onCameraMove(CameraPosition cameraPosition)async{

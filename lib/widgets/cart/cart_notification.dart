@@ -27,7 +27,7 @@ class _CartNotificationState extends State<CartNotification> {
     });
 
     return Visibility(
-      visible: _cartProvider.cartQty>0 ? true : false,
+      visible: _cartProvider.distance <=10 ? _cartProvider.cartQty>0 ? true : false : false,
       child: Container(
         height: 45,
         width: MediaQuery.of(context).size.width,

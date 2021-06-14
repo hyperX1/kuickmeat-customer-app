@@ -8,6 +8,8 @@ import 'package:kuickmeat_app/Screens/main_screen.dart';
 import 'package:kuickmeat_app/Screens/map_screen.dart';
 import 'package:kuickmeat_app/Screens/product_details_screen.dart';
 import 'package:kuickmeat_app/Screens/product_list_screen.dart';
+import 'package:kuickmeat_app/Screens/profile_screen.dart';
+import 'package:kuickmeat_app/Screens/profile_update_screen.dart';
 import 'package:kuickmeat_app/Screens/splash_screen.dart';
 import 'package:kuickmeat_app/Screens/vendor_home_screen.dart';
 import 'package:kuickmeat_app/providers/cart_provider.dart';
@@ -64,6 +66,8 @@ class MyApp extends StatelessWidget {
         ProductListScreen.id: (context) => ProductListScreen(),
         ProductDetailsScreen.id: (context) => ProductDetailsScreen(),
         CartScreen.id: (context) => CartScreen(),
+        ProfileScreen.id: (context) => ProfileScreen(),
+        UpdateProfile.id: (context) => UpdateProfile(),
       },
       builder: EasyLoading.init(),
     );

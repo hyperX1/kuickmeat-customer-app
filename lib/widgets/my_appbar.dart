@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kuickmeat_app/Screens/map_screen.dart';
 import 'package:kuickmeat_app/providers/location_provider.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,12 +40,19 @@ class _MyAppBarState extends State<MyAppBar> {
       snap: true,
       title: FlatButton(
         onPressed: () {
-          locationData.getCurrentPosition();
-          if (locationData.permissionAllowed == true) {
-            Navigator.pushNamed(context, MapScreen.id);
-          } else {
-            print('Permission not allowed');
-          }
+          locationData.getCurrentPosition().then((value){
+            if (value!=null) {
+              pushNewScreenWithRouteSettings(
+                  context,
+                  screen: MapScreen(),
+                  settings: RouteSettings(name: MapScreen.id),
+              withNavBar: false,
+              pageTransitionAnimation: PageTransitionAnimation.cupertino,
+              );
+            } else {
+              print('Permission not allowed');
+            }
+          });
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,
