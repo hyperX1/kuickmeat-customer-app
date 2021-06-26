@@ -48,13 +48,13 @@ class CartCard extends StatelessWidget {
                       ),
                       if (document.data()['comparedPrice'] > 0)
                         Text(
-                          document.data()['comparedPrice'].toString(),
+                          'Rs. ${document.data()['comparedPrice'].toString()}',
                           style: TextStyle(
                               decoration: TextDecoration.lineThrough,
                               fontSize: 12),
                         ),
                       Text(
-                        document.data()['price'].toStringAsFixed(0),
+                        'Rs. ${document.data()['price'].toStringAsFixed(0)}',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],

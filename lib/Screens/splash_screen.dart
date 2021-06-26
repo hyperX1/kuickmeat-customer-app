@@ -63,30 +63,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Hero(
-        tag: 'logo',
-        child: Center(
+      body : Center(
           child: AnimatedContainer(
             duration: Duration(seconds: 1),
             curve: Curves.fastOutSlowIn,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'images/beef.png',
-                  height: 100,
-                  width: 100,
-                ),
-                Text(
-                  'Kuick Meat',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
-                ),
-              ],
+            child: Container(
+              child: Image.asset(
+                'images/logo.png',
+                height: 350,
+                width: 350,
+              ),
             ),
           ),
         ),
-      ),
     );
   }
 }

@@ -70,7 +70,7 @@ class ProductDetailsScreen extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '\$${document.data()['price'].toStringAsFixed(0)}',
+                  'Rs. ${document.data()['price'].toStringAsFixed(0)}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
@@ -78,7 +78,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 ),
                 if (offer > 0) //if offer available only
                   Text(
-                    '\$${document.data()['comparedPrice']}',
+                    'Rs. ${document.data()['comparedPrice']}',
                     style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,

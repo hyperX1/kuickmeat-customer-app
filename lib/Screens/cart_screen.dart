@@ -4,14 +4,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:kuickmeat_app/Screens/map_screen.dart';
+import 'package:kuickmeat_app/Screens/my_orders_screen.dart';
 import 'package:kuickmeat_app/Screens/profile_screen.dart';
 import 'package:kuickmeat_app/providers/auth_provider.dart';
 import 'package:kuickmeat_app/providers/cart_provider.dart';
+import 'package:kuickmeat_app/providers/coupon_provider.dart';
 import 'package:kuickmeat_app/providers/location_provider.dart';
+import 'package:kuickmeat_app/services/cart_services.dart';
+import 'package:kuickmeat_app/services/order_services.dart';
 import 'package:kuickmeat_app/services/store_services.dart';
 import 'package:kuickmeat_app/services/user_services.dart';
 import 'package:kuickmeat_app/widgets/cart/cart_list.dart';
 import 'package:kuickmeat_app/widgets/cart/cod_toggle.dart';
+import 'package:kuickmeat_app/widgets/cart/coupon_widget.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,15 +33,18 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   StoreServices _store = StoreServices();
   UserServices _userService = UserServices();
+  OrderServices _orderServices = OrderServices();
+  CartServices _cartServices = CartServices();
   User user = FirebaseAuth.instance.currentUser;
   DocumentSnapshot doc;
   var textStyle = TextStyle(color: Colors.grey);
-  int discount = 30;
   int deliveryFee = 50;
   String _location = '';
   String _address = '';
   bool _loading = false;
   bool _checkingUser = false;
+  double discount = 0;
+
 
   @override
   void initState() {
@@ -64,12 +72,19 @@ class _CartScreenState extends State<CartScreen> {
     var _cartProvider = Provider.of<CartProvider>(context);
     final locationData = Provider.of<LocationProvider>(context);
     var userDetails = Provider.of<AuthProvider>(context);
-    userDetails.getUserDetails();
+    var _coupon = Provider.of<CouponProvider>(context);
+    userDetails.getUserDetails().then((value){
+      double subTotal = _cartProvider.subTotal;
+      double discountRate = _coupon.discountRate/100;
+      setState(() {
+        discount = subTotal*discountRate;
+      });
+    });
     var _payable = _cartProvider.subTotal + deliveryFee - discount;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey[200],
-      bottomSheet: Container(
+      bottomSheet: userDetails.snapshot == null ? Container() : Container(
         height: 140,
         color: Colors.blueGrey[900],
         child: Column(
@@ -149,7 +164,7 @@ class _CartScreenState extends State<CartScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Rs. ${_cartProvider.subTotal.toStringAsFixed(0)}',
+                          'Rs. ${_payable.toStringAsFixed(0)}',
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
@@ -172,7 +187,7 @@ class _CartScreenState extends State<CartScreen> {
                         onPressed: () {
                           EasyLoading.show(status: 'Please wait...');
                           _userService.getUserById(user.uid).then((value) {
-                            if (value.data()['userName'] == null) {
+                            if (value.data()['firstName'] == null) {
                               EasyLoading.dismiss();
                               //need to confirm user name before placing order
                               pushNewScreenWithRouteSettings(
@@ -183,16 +198,14 @@ class _CartScreenState extends State<CartScreen> {
                                     PageTransitionAnimation.cupertino,
                               );
                             } else {
-                              //confirm payment method (cash on delivery or pay online
-                              EasyLoading.dismiss();
-                              if (_cartProvider.cod == true) {
-                                print('cash on delivery');
-                              } else {
-                                print('pay online');
-                              }
+                              EasyLoading.show(status: 'Please wait...');
+                             //TODO: Payment gateway integration
+                              _saveOrder(_cartProvider,_payable,_coupon);
+
                             }
                           });
                         }),
+
                   ],
                 ),
               ),
@@ -222,7 +235,7 @@ class _CartScreenState extends State<CartScreen> {
                         style: TextStyle(fontSize: 10, color: Colors.grey),
                       ),
                       Text(
-                        'To pay : Rs. ${_cartProvider.subTotal.toStringAsFixed(0)}',
+                        'To pay : Rs. ${_payable.toStringAsFixed(0)}',
                         style: TextStyle(fontSize: 10, color: Colors.grey),
                       ),
                     ],
@@ -232,7 +245,7 @@ class _CartScreenState extends State<CartScreen> {
             ),
           ];
         },
-        body: _cartProvider.cartQty > 0
+        body: doc==null ? Center(child: CircularProgressIndicator()) : _cartProvider.cartQty > 0
             ? SingleChildScrollView(
                 padding: EdgeInsets.only(bottom: 80),
                 child: Container(
@@ -240,7 +253,6 @@ class _CartScreenState extends State<CartScreen> {
                       bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: Column(
                     children: [
-                      if (doc != null)
                         Container(
                           color: Colors.white,
                           child: Column(
@@ -278,36 +290,7 @@ class _CartScreenState extends State<CartScreen> {
                       ),
 
                       //coupon
-                      Container(
-                        color: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: 10, right: 10, left: 10),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  height: 38,
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        filled: true,
-                                        fillColor: Colors.grey[300],
-                                        hintText: 'Enter Voucher Code',
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey)),
-                                  ),
-                                ),
-                              ),
-                              OutlineButton(
-                                borderSide: BorderSide(color: Colors.grey),
-                                child: Text('Apply'),
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      CouponWidget(doc.data()['uid']),
 
                       //bill details card
                       Padding(
@@ -346,6 +329,7 @@ class _CartScreenState extends State<CartScreen> {
                                   SizedBox(
                                     height: 10,
                                   ),
+                                  if(discount > 0)
                                   Row(
                                     children: [
                                       Expanded(
@@ -355,7 +339,7 @@ class _CartScreenState extends State<CartScreen> {
                                         ),
                                       ),
                                       Text(
-                                        'Rs. $discount',
+                                        'Rs. ${discount.toStringAsFixed(0)}',
                                         style: textStyle,
                                       ),
                                     ],
@@ -441,5 +425,36 @@ class _CartScreenState extends State<CartScreen> {
               ),
       ),
     );
+  }
+
+  _saveOrder(CartProvider cartProvider,payable,CouponProvider coupon){
+    _orderServices.saveOrder({
+      'products' : cartProvider.cartList,
+      'userId' : user.uid,
+      'deliveryFee' : deliveryFee,
+      'total' : payable,
+      'discount' : discount.toStringAsFixed(0),
+      'cod' : cartProvider.cod,  //cash on delivery or not
+      'discountCode' : coupon.document==null ? null : coupon.document.data()['title'],
+      'seller' : {
+        'shopName' : widget.document.data()['shopName'],
+        'sellerId' : widget.document.data()['sellerUid'],
+      },
+      'timestamp' : DateTime.now().toString(),
+      'orderStatus' : 'Ordered',
+      'deliveryBoy' : {
+        'name' : '',
+        'phone' : '',
+        'location' : '',
+      },
+    }).then((value){
+      //after submitting order, need to clear cart list.
+      _cartServices.deleteCart().then((value){
+        _cartServices.checkData().then((value){
+          EasyLoading.showSuccess('Your order is submitted');
+          Navigator.pop(context); //close cart screen
+        });
+      });
+    });
   }
 }

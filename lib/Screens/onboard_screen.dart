@@ -33,9 +33,9 @@ List<Widget> _pages = [
     children: [
       Expanded(
         child: Image.asset(
-          'images/order-food.png',
-          height: 200,
-          width: 200,
+          'images/order-meat.png',
+          height: 250,
+          width: 250,
         ),
       ),
       Text(

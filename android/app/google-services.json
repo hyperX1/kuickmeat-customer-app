@@ -14,13 +14,42 @@
       },
       "oauth_client": [
         {
-          "client_id": "1081581157732-emgrm96o0jfrvnoa0erh92d9oddiic1i.apps.googleusercontent.com",
+          "client_id": "1081581157732-npjd9f9le4cv9uo5kv9366mgako2adha.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.kuickmeat.kuickmeat_app",
-            "certificate_hash": "694fc7d18216703902a52c67bcdc18fce9e6caab"
+            "certificate_hash": "e01e00ce683d1b77489ee6787f216c5f95c46cc4"
           }
         },
+        {
+          "client_id": "1081581157732-143flpm88g928rg76p0g2kqgtkd1svvq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChbKBEisfxSQCWqFZtXA0cO27wOps4mfw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1081581157732-143flpm88g928rg76p0g2kqgtkd1svvq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1081581157732:android:12ded6b6d9cce9ff298e71",
+        "android_client_info": {
+          "package_name": "com.kuickmeat_vendor_app"
+        }
+      },
+      "oauth_client": [
         {
           "client_id": "1081581157732-143flpm88g928rg76p0g2kqgtkd1svvq.apps.googleusercontent.com",
           "client_type": 3

@@ -122,7 +122,7 @@ class ProductCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              '\$${document.data()['price'].toStringAsFixed(0)}',
+                              'Rs. ${document.data()['price'].toStringAsFixed(0)}',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             SizedBox(
@@ -131,7 +131,7 @@ class ProductCard extends StatelessWidget {
                             if (document.data()['comparedPrice'] >
                                 0) //only show if it has a value or more than 0
                               Text(
-                                '\$${document.data()['comparedPrice'].toStringAsFixed(0)}',
+                                'Rs. ${document.data()['comparedPrice'].toStringAsFixed(0)}',
                                 style: TextStyle(
                                     decoration: TextDecoration.lineThrough,
                                     fontWeight: FontWeight.bold,

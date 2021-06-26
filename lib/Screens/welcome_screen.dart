@@ -27,6 +27,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         builder: (context) => StatefulBuilder(
           builder: (context, StateSetter myState) {
             return Container(
+              height: 500,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
                 child: Column(
@@ -82,7 +83,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       },
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     Container(
                       child: Row(
@@ -115,6 +116,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                       : 'ENTER PHONE NUMBER',
                                   style: TextStyle(color: Colors.white),
                                 ),
+
                               ),
                             ),
                           ),

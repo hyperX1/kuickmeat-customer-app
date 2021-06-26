@@ -14,17 +14,12 @@ class CartNotification extends StatefulWidget {
 
 class _CartNotificationState extends State<CartNotification> {
   CartServices _cart = CartServices();
-  DocumentSnapshot document;
 
   @override
   Widget build(BuildContext context) {
     final _cartProvider = Provider.of<CartProvider>(context);
     _cartProvider.getCartTotal();
-    _cart.getShopName().then((value) {
-      setState(() {
-        document = value;
-      });
-    });
+    _cartProvider.getShopName();
 
     return Visibility(
       visible: _cartProvider.distance <=10 ? _cartProvider.cartQty>0 ? true : false : false,
@@ -58,15 +53,15 @@ class _CartNotificationState extends State<CartNotification> {
                           style: TextStyle(color: Colors.white),
                         ),
                         Text(
-                          '\$${_cartProvider.subTotal.toStringAsFixed(0)}',
+                          'Rs. ${_cartProvider.subTotal.toStringAsFixed(0)}',
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                    if (document.exists)
+                    if (_cartProvider.document!=null)
                       Text(
-                        'From ${document.data()['shopName']}',
+                        'From ${_cartProvider.document.data()['shopName']}',
                         style: TextStyle(color: Colors.white, fontSize: 10),
                       )
                   ],
@@ -78,7 +73,7 @@ class _CartNotificationState extends State<CartNotification> {
                     context,
                     settings: RouteSettings(name: CartScreen.id),
                     screen: CartScreen(
-                      document: document,
+                      document: _cartProvider.document,
                     ),
                     withNavBar: false,
                     pageTransitionAnimation: PageTransitionAnimation.cupertino,

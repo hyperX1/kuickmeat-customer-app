@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:kuickmeat_app/Screens/map_screen.dart';
+import 'package:kuickmeat_app/Screens/my_orders_screen.dart';
 import 'package:kuickmeat_app/Screens/profile_update_screen.dart';
 import 'package:kuickmeat_app/Screens/welcome_screen.dart';
 import 'package:kuickmeat_app/providers/auth_provider.dart';
@@ -104,7 +105,7 @@ class ProfileScreen extends StatelessWidget {
                             tileColor: Colors.white,
                             leading: Icon(
                               Icons.location_on,
-                              color: Colors.green,
+                              color: Colors.redAccent,
                             ),
                             title:
                                 Text(userDetails.snapshot.data()['location']),
@@ -115,10 +116,10 @@ class ProfileScreen extends StatelessWidget {
                             trailing: SizedBox(
                               width: 80,
                               child: OutlineButton(
-                                borderSide: BorderSide(color: Colors.green),
+                                borderSide: BorderSide(color: Colors.redAccent),
                                 child: Text(
                                   'Change',
-                                  style: TextStyle(color: Colors.green),
+                                  style: TextStyle(color: Colors.redAccent),
                                 ),
                                 onPressed: () {
                                   EasyLoading.show(status: 'Please wait...');

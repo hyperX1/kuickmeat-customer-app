@@ -182,13 +182,18 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<DocumentSnapshot>getUserDetails() async{
+  getUserDetails() async{
     DocumentSnapshot result = await FirebaseFirestore.instance
         .collection('users')
         .doc(_auth.currentUser.uid)
         .get();
-    this.snapshot = result;
-    notifyListeners();
+    if(result!=null){
+      this.snapshot = result;
+      notifyListeners();
+    }else{
+      this.snapshot = null;
+      notifyListeners();
+    }
 
     return result;
   }

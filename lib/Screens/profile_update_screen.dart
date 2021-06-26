@@ -139,7 +139,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
               ),
               TextFormField(
                 controller: email,
-                enabled: false,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   labelStyle: TextStyle(color: Colors.grey),
